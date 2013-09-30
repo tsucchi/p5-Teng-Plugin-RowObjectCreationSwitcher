@@ -1,0 +1,72 @@
+{
+   "abstract" : "Teng's plugin which enables/disables suppress_row_objects with guard object.",
+   "author" : [
+      "Takuya Tsuchida <tsucchi@cpan.org<gt>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Minilla/v0.6.7, CPAN::Meta::Converter version 2.131560",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Teng-Plugin-RowObjectCreationSwitcher",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "xt",
+         "inc",
+         "share",
+         "eg",
+         "examples",
+         "author"
+      ]
+   },
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "CPAN::Meta" : "0",
+            "CPAN::Meta::Prereqs" : "0",
+            "Module::Build" : "0.38"
+         }
+      },
+      "develop" : {
+         "requires" : {
+            "Test::CPAN::Meta" : "0",
+            "Test::MinimumVersion" : "0.10108",
+            "Test::Pod" : "1.41",
+            "Test::Spellunker" : "v0.2.7"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Scope::Guard" : "0",
+            "Teng" : "0",
+            "perl" : "5.008005"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Test::More" : "0.98"
+         }
+      }
+   },
+   "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/tsucchi/p5-Teng-Plugin-RowObjectCreationSwitcher/issues"
+      },
+      "homepage" : "https://github.com/tsucchi/p5-Teng-Plugin-RowObjectCreationSwitcher",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/tsucchi/p5-Teng-Plugin-RowObjectCreationSwitcher.git",
+         "web" : "https://github.com/tsucchi/p5-Teng-Plugin-RowObjectCreationSwitcher"
+      }
+   },
+   "version" : "0.01",
+   "x_contributors" : [
+      "Takuya Tsuchida <tsucchi@cpan.org>"
+   ]
+}
