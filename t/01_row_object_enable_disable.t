@@ -18,12 +18,12 @@ my $condition = { name     => 'perl' };
 my $option    = { order_by => 'id'   };
 
 
-subtest 'disable_row_object', sub {
-
+subtest 'suppress row object', sub {
+    $db->suppress_row_objects(0);
     my $row = $db->single('mock_basic', $condition, $option);
     ok( $row->isa('Teng::Row') );
     {
-        my $guard = $db->disable_row_object();
+        my $guard = $db->temporary_suppress_object_creation_guard(1);
         $row = $db->single('mock_basic', $condition, $option);
         is( $db->suppress_row_objects, 1 );
         is( ref $row, 'HASH' );
@@ -31,41 +31,34 @@ subtest 'disable_row_object', sub {
     # dismiss guard
     $row = $db->single('mock_basic', $condition, $option);
     ok( $row->isa('Teng::Row') );
-
-    $db->disable_row_object();
-    $row = $db->single('mock_basic', $condition, $option);
-    is( ref $row, 'HASH' );
 };
 
 
-subtest 'enable_row_object', sub {
-    $db->disable_row_object();
+subtest 'enable row object', sub {
+    $db->suppress_row_objects(1);
     my $row = $db->single('mock_basic', $condition, $option);
     is( ref $row, 'HASH' );
     {
-        my $guard = $db->enable_row_object();
+        my $guard = $db->temporary_suppress_object_creation_guard(0);
         $row = $db->single('mock_basic', $condition, $option);
         ok( $row->isa('Teng::Row') );
     }
     # dismiss guard
     $row = $db->single('mock_basic', $condition, $option);
     is( ref $row, 'HASH' );
-
-    $db->enable_row_object();
-    $row = $db->single('mock_basic', $condition, $option);
-    ok( $row->isa('Teng::Row') );
 };
 
 
 subtest 'nested guard', sub {
+    $db->suppress_row_objects(0);
     my $row = $db->single('mock_basic', $condition, $option);
     ok( $row->isa('Teng::Row') );
     {
-        my $guard = $db->disable_row_object();
+        my $guard = $db->temporary_suppress_object_creation_guard(1);
         $row = $db->single('mock_basic', $condition, $option);
         is( ref $row, 'HASH' );
         {
-            my $guard = $db->disable_row_object();
+            my $guard = $db->temporary_suppress_object_creation_guard(1);
             $row = $db->single('mock_basic', $condition, $option);
             is( ref $row, 'HASH' );
         }
@@ -75,7 +68,14 @@ subtest 'nested guard', sub {
     # dismiss guard
     $row = $db->single('mock_basic', $condition, $option);
     ok( $row->isa('Teng::Row') );
+};
 
+subtest 'void context (guard object is not received)', sub {
+    eval {
+        $db->temporary_suppress_object_creation_guard(1);
+        fail "expected exception";
+    };
+    like( $@, qr/error: called in void context is not allowed/ );
 };
 
 

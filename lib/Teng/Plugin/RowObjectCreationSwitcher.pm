@@ -6,27 +6,19 @@ use warnings;
 our $VERSION = "0.01";
 
 use Scope::Guard;
+use Carp qw();
 
-our @EXPORT = qw(enable_row_object disable_row_object);
+our @EXPORT = qw(temporary_suppress_object_creation_guard);
 
-sub enable_row_object {
-    my ($self, $new_status) = @_;
-    return Teng::Plugin::RowObjectCreationSwitcher::_set_suppress_row_objects($self, 0);
-}
-
-sub disable_row_object {
-    my ($self, $new_status) = @_;
-    return Teng::Plugin::RowObjectCreationSwitcher::_set_suppress_row_objects($self, 1);
-}
-
-
-sub _set_suppress_row_objects {
+sub temporary_suppress_object_creation_guard {
     my ($self, $new_status) = @_;
 
     my $current_status = $self->suppress_row_objects(); #preserve current(for guard object)
     $self->suppress_row_objects($new_status);
 
-    return if ( !defined wantarray() );
+    if ( !defined wantarray() ) { #void context
+        Carp::croak("error: called in void context is not allowed");
+    }
 
     return Scope::Guard->new(sub { 
         $self->suppress_row_objects($current_status);
@@ -51,15 +43,15 @@ Teng::Plugin::RowObjectCreationSwitcher - Teng's plugin which enables/disables s
     package main;
     my $db = MyProj::DB->new(dbh => $dbh);
     {
-        my $guard = $db->disable_row_object(); # disable to generate row object(suppress_row_objects is 1)
+        my $guard = $db->temporary_suppress_object_creation_guard(1); # row object creation is suppressed
         {
-            my $guard2 = $db->enable_row_object(); # enable again(suppress_row_objects is 0)
+            my $guard2 = $db->temporary_suppress_object_creation_guard(1); # row object is created. (isn't suppressed)
             ... # do something
         }
-        # dismiss $guard2 (row object is disabled)
+        # dismiss $guard2 (row object creation is suppressed)
         ... # do something
     }
-    # dismiss $guard (row object is enabled)
+    # dismiss $guard (row object creation is unsuppressed)
 
 =head1 DESCRIPTION
 
@@ -68,14 +60,9 @@ This switcher returns guard object and if guard is dismissed, status is back to 
 
 =head1 METHODS
 
-=head2 $guard = $self->enable_row_object()
+=head2 $guard = $self->temporary_suppress_object_creation_guard($bool_suppress_row_objects)
 
-Disable suppress_row_objects status. (set suppress_row_object=0). This method returns guard object and guard is dismissed, status is back to previous. 
-
-=head2 $guard = $self->disable_row_object()
-
-Enable suppress_row_objects status. (set suppress_row_object=1). This method returns guard object and guard is dismissed, status is back to previous. 
-
+set suppress_row_objects and return guard object.  When guard is dismissed, status is back to previous.
 
 =head1 LICENSE
 

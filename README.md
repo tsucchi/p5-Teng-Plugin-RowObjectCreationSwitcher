@@ -9,15 +9,15 @@ Teng::Plugin::RowObjectCreationSwitcher - Teng's plugin which enables/disables s
     package main;
     my $db = MyProj::DB->new(dbh => $dbh);
     {
-        my $guard = $db->disable_row_object(); # disable to generate row object(suppress_row_objects is 1)
+        my $guard = $db->temporary_suppress_object_creation_guard(1); # row object creation is suppressed
         {
-            my $guard2 = $db->enable_row_object(); # enable again(suppress_row_objects is 0)
+            my $guard2 = $db->temporary_suppress_object_creation_guard(1); # row object is created. (isn't suppressed)
             ... # do something
         }
-        # dismiss $guard2 (row object is disabled)
+        # dismiss $guard2 (row object creation is suppressed)
         ... # do something
     }
-    # dismiss $guard (row object is enabled)
+    # dismiss $guard (row object creation is unsuppressed)
 
 # DESCRIPTION
 
@@ -26,15 +26,9 @@ This switcher returns guard object and if guard is dismissed, status is back to 
 
 # METHODS
 
-## $guard = $self->enable\_row\_object()
+## $guard = $self->temporary\_suppress\_object\_creation\_guard($bool\_suppress\_row\_objects)
 
-Disable suppress\_row\_objects status. (set suppress\_row\_object=0). This method returns guard object and guard is dismissed, status is back to previous. 
-
-## $guard = $self->disable\_row\_object()
-
-Enable suppress\_row\_objects status. (set suppress\_row\_object=1). This method returns guard object and guard is dismissed, status is back to previous. 
-
-
+set suppress\_row\_objects and return guard object.  When guard is dismissed, status is back to previous.
 
 # LICENSE
 
