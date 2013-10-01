@@ -23,7 +23,7 @@ subtest 'suppress row object', sub {
     my $row = $db->single('mock_basic', $condition, $option);
     ok( $row->isa('Teng::Row') );
     {
-        my $guard = $db->temporary_suppress_object_creation_guard(1);
+        my $guard = $db->temporary_suppress_row_objects_guard(1);
         $row = $db->single('mock_basic', $condition, $option);
         is( $db->suppress_row_objects, 1 );
         is( ref $row, 'HASH' );
@@ -39,7 +39,7 @@ subtest 'enable row object', sub {
     my $row = $db->single('mock_basic', $condition, $option);
     is( ref $row, 'HASH' );
     {
-        my $guard = $db->temporary_suppress_object_creation_guard(0);
+        my $guard = $db->temporary_suppress_row_objects_guard(0);
         $row = $db->single('mock_basic', $condition, $option);
         ok( $row->isa('Teng::Row') );
     }
@@ -54,11 +54,11 @@ subtest 'nested guard', sub {
     my $row = $db->single('mock_basic', $condition, $option);
     ok( $row->isa('Teng::Row') );
     {
-        my $guard = $db->temporary_suppress_object_creation_guard(1);
+        my $guard = $db->temporary_suppress_row_objects_guard(1);
         $row = $db->single('mock_basic', $condition, $option);
         is( ref $row, 'HASH' );
         {
-            my $guard = $db->temporary_suppress_object_creation_guard(1);
+            my $guard = $db->temporary_suppress_row_objects_guard(1);
             $row = $db->single('mock_basic', $condition, $option);
             is( ref $row, 'HASH' );
         }
@@ -72,10 +72,18 @@ subtest 'nested guard', sub {
 
 subtest 'void context (guard object is not received)', sub {
     eval {
-        $db->temporary_suppress_object_creation_guard(1);
+        $db->temporary_suppress_row_objects_guard(1);
         fail "expected exception";
     };
-    like( $@, qr/error: called in void context is not allowed/ );
+    like( $@, qr/Can't create a Scope::Guard in void context/ );
+};
+
+subtest 'missing argument', sub {
+    eval {
+        $db->temporary_suppress_row_objects_guard();
+        fail "expected exception";
+    };
+    like( $@, qr/error: missing argument/ );
 };
 
 

@@ -3,22 +3,22 @@ use 5.008005;
 use strict;
 use warnings;
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 
 use Scope::Guard;
 use Carp qw();
 
-our @EXPORT = qw(temporary_suppress_object_creation_guard);
+our @EXPORT = qw(temporary_suppress_row_objects_guard);
 
-sub temporary_suppress_object_creation_guard {
+sub temporary_suppress_row_objects_guard {
     my ($self, $new_status) = @_;
+
+    if( @_ < 2 ) { #missing $new_status
+        Carp::croak('error: missing argument');
+    }
 
     my $current_status = $self->suppress_row_objects(); #preserve current(for guard object)
     $self->suppress_row_objects($new_status);
-
-    if ( !defined wantarray() ) { #void context
-        Carp::croak("error: called in void context is not allowed");
-    }
 
     return Scope::Guard->new(sub { 
         $self->suppress_row_objects($current_status);
@@ -43,9 +43,9 @@ Teng::Plugin::RowObjectCreationSwitcher - Teng's plugin which enables/disables s
     package main;
     my $db = MyProj::DB->new(dbh => $dbh);
     {
-        my $guard = $db->temporary_suppress_object_creation_guard(1); # row object creation is suppressed
+        my $guard = $db->temporary_suppress_row_objects_guard(1); # row object creation is suppressed
         {
-            my $guard2 = $db->temporary_suppress_object_creation_guard(1); # row object is created. (isn't suppressed)
+            my $guard2 = $db->temporary_suppress_row_objects_guard(1); # row object is created. (isn't suppressed)
             ... # do something
         }
         # dismiss $guard2 (row object creation is suppressed)
@@ -60,7 +60,7 @@ This switcher returns guard object and if guard is dismissed, status is back to 
 
 =head1 METHODS
 
-=head2 $guard = $self->temporary_suppress_object_creation_guard($bool_suppress_row_objects)
+=head2 $guard = $self->temporary_suppress_row_objects_guard($bool_suppress_row_objects)
 
 set suppress_row_objects and return guard object.  When guard is dismissed, status is back to previous.
 

@@ -65,7 +65,7 @@
          "web" : "https://github.com/tsucchi/p5-Teng-Plugin-RowObjectCreationSwitcher"
       }
    },
-   "version" : "0.01",
+   "version" : "0.02",
    "x_contributors" : [
       "Takuya Tsuchida <tsucchi@cpan.org>"
    ]
