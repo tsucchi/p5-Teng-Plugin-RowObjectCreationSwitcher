@@ -2,6 +2,11 @@ Revision history for Perl extension Teng-Plugin-RowObjectCreationSwitcher
 
 {{$NEXT}}
 
+    - incompatible changes
+       - rename methods : enable/disable_row_object -> temporary_suppress_row_objects_guard
+       - raise error if guard object is not received
+    - raise error if parameter to temporary_suppress_row_objects_guard is missing
+
 0.01 2013-09-30T15:54:22Z
 
     - original version
