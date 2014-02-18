@@ -32,7 +32,9 @@ __END__
 
 =encoding utf-8
 
-Teng::Plugin::RowObjectCreationSwitcher - Teng's plugin which enables/disables suppress_row_objects with guard object.
+=head1 NAME
+
+Teng::Plugin::RowObjectCreationSwitcher - Teng plugin which enables/disables suppress_row_objects with guard object
 
 =head1 SYNOPSIS
 
