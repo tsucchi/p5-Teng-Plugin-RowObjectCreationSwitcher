@@ -1,4 +1,6 @@
-Teng::Plugin::RowObjectCreationSwitcher - Teng's plugin which enables/disables suppress\_row\_objects with guard object.
+# NAME
+
+Teng::Plugin::RowObjectCreationSwitcher - Teng plugin which enables/disables suppress\_row\_objects with guard object
 
 # SYNOPSIS
 
@@ -39,4 +41,4 @@ it under the same terms as Perl itself.
 
 # AUTHOR
 
-Takuya Tsuchida <tsucchi@cpan.org<gt>
+Takuya Tsuchida <tsucchi@cpan.org>
