@@ -24,7 +24,7 @@ Teng::Plugin::RowObjectCreationSwitcher - Teng plugin which enables/disables sup
 
 # DESCRIPTION
 
-Teng::Plugin::RowObjectCreationSwitcher is plugin for [Teng](http://search.cpan.org/perldoc?Teng) which provides switcher to enable/disable to generate row object.
+Teng::Plugin::RowObjectCreationSwitcher is plugin for [Teng](https://metacpan.org/pod/Teng) which provides switcher to enable/disable to generate row object.
 This switcher returns guard object and if guard is dismissed, status is back to previous.
 
 # METHODS
